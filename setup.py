@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="my-python-commons-nwrobel",
-    version="1.0.0",
+    version="1.0.1",
     author="Nick Wrobel",
     author_email="nick@nwrobel.com",
     description="Package containing common modules that implement frequently needed functionalities",
