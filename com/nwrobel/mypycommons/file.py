@@ -1,6 +1,6 @@
 '''
-This module contains functionality related to performing file/directory operations: getting, 
-renaming, deleting, and moving.
+This module contains functionality related to performing file/directory operations, such as reading,  
+writing, renaming, deleting, and moving.
 '''
 
 import os
@@ -53,7 +53,6 @@ def GetAllFilesRecursive(rootPath, useWindowsExtendedPaths=False):
 
     return filePaths
 
-
 def GetAllFilesByExtension(rootPath, fileExt, useWindowsExtendedPaths=False):
     '''
     Gets the filepaths of all files contained within the given root directory that have the given 
@@ -81,14 +80,12 @@ def GetAllFilesByExtension(rootPath, fileExt, useWindowsExtendedPaths=False):
 
     return matchingFilepaths
 
-
 def createDirectory(folderPath):
     '''
     Creates the directory specified by the given directory path.
     '''
     folderPathObject = Path(folderPath)
     folderPathObject.mkdir(parents=True) 
-
 
 def CopyFilesToDirectory(srcFiles, destDir):
     '''
@@ -99,13 +96,11 @@ def CopyFilesToDirectory(srcFiles, destDir):
     for file in srcFiles:
         shutil.copy2(file, destDir)
 
-
 def DeleteFile(filePath):
     '''
     Deletes a single file, given the filepath. Does not delete directories.
     '''
     os.remove(filePath)
-
 
 def DeleteDirectory(directoryPath):
     '''
@@ -137,7 +132,6 @@ def GetFilename(filePath):
     filePathObject = Path(filePath)
     return filePathObject.name
 
-
 def GetFileExtension(filePath):
     '''
     Returns the file extension of a file, given its filepath. Specifically, this returns the final 
@@ -146,7 +140,6 @@ def GetFileExtension(filePath):
     '''
     filePathObject = Path(filePath)
     return filePathObject.suffix
-
 
 def GetFileBaseName(filePath):
     '''
@@ -203,14 +196,16 @@ def DecompressSingleGZFile(gzippedFilePath, decompFilePath):
         with open(decompFilePath, 'wb') as outputFile:
             shutil.copyfileobj(inputFile, outputFile)
 
-def compressFileToArchive(inputFilePath, archiveOutFilePath):
+def compressToArchive(inputFilePath, archiveOutFilePath, archiveType='gz'):
     '''
-    Compresses one or more files to a .GZ archive, given the absolute input file path(s) and file
-    path for the archive file.
+    Compresses the given files and/or directories to either a GZ or 7z archive, given the input 
+    filepath(s) and filepath for the archive file. If 7z is chosen, 7zip must be installed on the
+    system and 7z must be in the path.
 
     Params:
-        inputFilepath: single path of the file to compress, or a list of paths
+        inputFilePath: single path of the file or directory to compress, or a list of paths
         archiveOutFilePath: filepath of the archive file to output to
+        archiveType: type of archive to create - valid types: ['gz', '7z'], gz by default
     '''
     if (not isinstance(inputFilePath, list)):
         inputFilePath = [inputFilePath]
@@ -219,10 +214,14 @@ def compressFileToArchive(inputFilePath, archiveOutFilePath):
     if (not directoryExists(archiveFileParentDir)):
         createDirectory(archiveFileParentDir)
 
-    with tarfile.open(archiveOutFilePath, 'w:gz') as archive:
-        for filepath in inputFilePath:
-            archive.add(filepath, arcname=GetFilename(filepath))
-
+    if (archiveType == 'gz'):
+        with tarfile.open(archiveOutFilePath, 'w:gz') as archive:
+            for filepath in inputFilePath:
+                archive.add(filepath, arcname=GetFilename(filepath))
+    
+    elif (archiveType == '7z'):
+        sevenZipArgs = ['7z', 'a', '-t7z', '-mx=9', '-mfb=64', '-md=64m', archiveOutFilePath] + inputFilePath
+        subprocess.call(sevenZipArgs)
 
 def clearFileContents(filepath):
     '''
@@ -231,7 +230,6 @@ def clearFileContents(filepath):
     '''
     DeleteFile(filepath)
     open(filepath, 'wb').close()
-
 
 def writeToFile(filepath, content):
     '''
@@ -243,6 +241,15 @@ def writeToFile(filepath, content):
     '''
     with open(filepath, 'w', encoding='utf-8') as outputFile:
         outputFile.write(content)
+
+def readJsonFile(filepath):
+    '''
+    Reads the given Json file and returns a dict or a Json array representing the data.
+    '''
+    with open(filepath) as f:
+        data = json.load(f)
+
+    return data
 
 # -------------------------------- Private module helper functions ---------------------------------
 #
