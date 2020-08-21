@@ -233,14 +233,19 @@ def clearFileContents(filepath):
 
 def writeToFile(filepath, content):
     '''
-    Writes the given content to the given file. This only works with string data.
+    Writes the given data/content to the given file.
 
     Params:
         filePath: path to the output file
-        content: string data to be written to the file
+        content: data to be written to the file - must be either a string or a list of strings. Lists
+            are written to the file with one string list item per line
     '''
+    if (isinstance(content, str)):
+        content = [content]
+
     with open(filepath, 'w', encoding='utf-8') as outputFile:
-        outputFile.write(content)
+        for item in content:
+            outputFile.write("{}\n".format(item))
 
 def readJsonFile(filepath):
     '''
