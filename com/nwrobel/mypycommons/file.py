@@ -292,8 +292,12 @@ def readJsonFile(filepath):
     return data
 
 def readCSVFile(csvFilePath):
+    csvLines = []
     with open(csvFilePath, mode='r') as csvFile:
-        csvLines = csv.DictReader(csvFile)
+        csvReader = csv.DictReader(csvFile)
+
+        for line in csvReader:
+            csvLines.append(line)
 
     return csvLines
 
