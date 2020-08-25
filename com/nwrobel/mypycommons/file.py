@@ -16,6 +16,39 @@ def isValidPossibleFilepath(filepath):
     '''
     return os.path.isabs(filepath)
 
+def getThisScriptCurrentDirectory():
+    '''
+    Returns the current directory that this current script (the one being executed) is located in.
+    '''
+    callerModuleName = getCallerModuleName()
+    return (os.path.dirname(os.path.realpath(callerModuleName)))
+
+def applyPermissionToPath(path, owner, group, mask):
+    '''
+    Applies the given Unix file permissions (owner, group, permission mask) to the given path using
+    the chown and chmod commands. 
+
+    Note: this requires root (sudo) permissions to work - the python script using this function must
+    be run like "sudo python3 script.py".
+    '''
+    # Set ownership and permissions using by calling the linux chown and chmod commands
+    # If the path is a dir, specify the recursive option
+    ownerGroup = "{}:{}".format(owner, group)
+    if (os.path.isdir(path)):    
+        subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
+        subprocess.call(['sudo', 'chmod', mask, '-R', path])
+    else:
+        subprocess.call(['sudo', 'chown', ownerGroup, path])
+        subprocess.call(['sudo', 'chmod', mask, path])
+
+def getCallerModuleName():
+    '''
+    Returns the name of the caller module, i.e. the module that called this current function.
+    '''
+    frm = inspect.stack()[1]
+    module = inspect.getmodule(frm[0])
+    return module.__name__
+
 def GetAllFilesAndDirectoriesRecursive(rootPath, useWindowsExtendedPaths=False):
     '''
     Gets the filepaths of all files AND folders within the given root directory, recursively.
@@ -255,6 +288,12 @@ def readJsonFile(filepath):
         data = json.load(f)
 
     return data
+
+def readCSVFile(csvFilePath):
+    with open(csvFilePath, mode='r') as csvFile:
+        csvLines = csv.DictReader(csvFile)
+
+    return csvLines
 
 # -------------------------------- Private module helper functions ---------------------------------
 #
