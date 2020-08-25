@@ -9,6 +9,7 @@ import gzip
 import shutil
 import tarfile
 import inspect
+import csv
 
 def isValidPossibleFilepath(filepath):
     '''
