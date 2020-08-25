@@ -8,6 +8,7 @@ from pathlib import Path
 import gzip
 import shutil
 import tarfile
+import inspect
 
 def isValidPossibleFilepath(filepath):
     '''
