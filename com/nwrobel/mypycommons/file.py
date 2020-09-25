@@ -234,9 +234,9 @@ def DecompressSingleGZFile(gzippedFilePath, decompFilePath):
 
 def compressToArchive(inputFilePath, archiveOutFilePath, archiveType='gz'):
     '''
-    Compresses the given files and/or directories to either a GZ or 7z archive, given the input 
-    filepath(s) and filepath for the archive file. If 7z is chosen, 7zip must be installed on the
-    system and 7z must be in the path.
+    Compresses the given files and/or directories to a tar archive, then compresses this tar into
+    a 7zip archive, given the input filepath(s) and filepath for the archive file. 
+    7zip must be installed on the system and 7z must be in the path.
 
     Params:
         inputFilePath: single path of the file or directory to compress, or a list of paths
