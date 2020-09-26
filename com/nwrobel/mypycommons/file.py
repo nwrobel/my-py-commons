@@ -11,6 +11,7 @@ import shutil
 import tarfile
 import inspect
 import csv
+import json
 
 def isValidPossibleFilepath(filepath):
     '''
@@ -121,7 +122,10 @@ def createDirectory(folderPath):
     Creates the directory specified by the given directory path.
     '''
     folderPathObject = Path(folderPath)
-    folderPathObject.mkdir(parents=True) 
+    folderPathObject.mkdir(parents=True)
+
+def moveFileToDirectory(filepath, targetDirPath):
+    shutil.move(filepath, targetDirPath) 
 
 def CopyFilesToDirectory(srcFiles, destDir):
     '''

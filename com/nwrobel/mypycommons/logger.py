@@ -9,7 +9,8 @@ as a better alternative to print statements for debugging, info, error, etc purp
 import logging
 import inspect
 
-from com.nwrobel import mypycommons.file
+from com.nwrobel import mypycommons
+import com.nwrobel.mypycommons.file
 
 global _sharedLogger
 
@@ -37,7 +38,7 @@ def getSharedLogger():
         return _sharedLogger
 
 
-def initSharedLogger(logFilename='', logDir):
+def initSharedLogger(logDir, logFilename=''):
     '''
     Creates/initializes and configures a the project shared logger instance, which will be used 
     as the go-to logger instance for all functions and modules to use when defining
