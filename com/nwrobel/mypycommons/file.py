@@ -36,7 +36,6 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     be run like "sudo python3 script.py".
     '''
     # Set ownership and permissions using by calling the linux chown and chmod commands
-    # If the path is a dir, specify the recursive option
     ownerGroup = "{}:{}".format(owner, group)
     if (recursive):    
         subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
