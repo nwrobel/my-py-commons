@@ -27,7 +27,7 @@ def getThisScriptCurrentDirectory():
     callerModuleName = getCallerModuleName()
     return (os.path.dirname(os.path.realpath(callerModuleName)))
 
-def applyPermissionToPath(path, owner, group, mask):
+def applyPermissionToPath(path, owner, group, mask, recursive=False):
     '''
     Applies the given Unix file permissions (owner, group, permission mask) to the given path using
     the chown and chmod commands. 
@@ -38,7 +38,7 @@ def applyPermissionToPath(path, owner, group, mask):
     # Set ownership and permissions using by calling the linux chown and chmod commands
     # If the path is a dir, specify the recursive option
     ownerGroup = "{}:{}".format(owner, group)
-    if (os.path.isdir(path)):    
+    if (recursive):    
         subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
         subprocess.call(['sudo', 'chmod', mask, '-R', path])
     else:
