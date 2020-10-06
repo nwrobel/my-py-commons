@@ -24,7 +24,7 @@ def getThisScriptCurrentDirectory():
     '''
     Returns the current directory that this current script (the one being executed) is located in.
     '''
-    callerModuleName = getCallerModuleName()
+    callerModuleName = _getCallerModuleName()
     return (os.path.dirname(os.path.realpath(callerModuleName)))
 
 def applyPermissionToPath(path, owner, group, mask, recursive=False):
@@ -44,13 +44,14 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
         subprocess.call(['sudo', 'chown', ownerGroup, path])
         subprocess.call(['sudo', 'chmod', mask, path])
 
-def getCallerModuleName():
+def _getCallerModuleName():
     '''
-    Returns the name of the caller module, i.e. the module that called this current function.
+    Returns the name of the caller (of the caller) module. Used by the getThisScriptCurrentDirectory
+    function.
     '''
-    frm = inspect.stack()[1]
+    frm = inspect.stack()[2]
     module = inspect.getmodule(frm[0])
-    return module.__name__
+    return module.__file__
 
 def GetAllFilesAndDirectoriesRecursive(rootPath, useWindowsExtendedPaths=False):
     '''
