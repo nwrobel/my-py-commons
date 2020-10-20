@@ -16,7 +16,7 @@ global _sharedLogger
 
 class SharedLoggerNotInitialized(Exception):
     '''
-    Custom exception class for the type of exception thrown by getMLULogger() if the shared
+    Custom exception class for the type of exception thrown if the shared
     logger has not yet been initialized.
     '''
     pass
@@ -26,13 +26,13 @@ def getSharedLogger():
     Returns the current shared logger instance so it can be used to define log messages in a module/
     script's code. 
     
-    The shared logger MUST first be initialized by calling logger.initMLULogger() from the 
+    The shared logger MUST first be initialized by calling logger.initSharedLogger() from the 
     main script before this function is used. If it is not, a SharedLoggerNotInitialized exception is thrown.
     '''
 
     global _sharedLogger
     if (_sharedLogger is None):
-        raise SharedLoggerNotInitialized("Python project shared logger instance is not yet configured/initialized: you must call initMLULogger()' first from the main script to setup the shared logger that all modules will use")
+        raise SharedLoggerNotInitialized("Python project shared logger instance is not yet configured/initialized: you must call initSharedLogger()' first from the main script to setup the shared logger that all modules will use")
 
     else:
         return _sharedLogger
@@ -67,11 +67,11 @@ def initSharedLogger(logDir, logFilename=''):
     if (not logFilename):
         frame = inspect.stack()[1]
         module = inspect.getmodule(frame[0])
-        callerModuleFilename = mlu.common.file.GetFilename(module.__file__)
+        callerModuleFilename = mypycommons.GetFilename(module.__file__)
 
         logFilename = "{}.log".format(callerModuleFilename)
 
-    # ask the Python logging module for a new logger, and give it the name of our new MLU logger
+    # ask the Python logging module for a new logger, and give it the name of our shared logger
     _sharedLogger = logging.getLogger('sharedLogger')
 
     # allow all messages of all levels to be passed to the handlers: the handlers will have their

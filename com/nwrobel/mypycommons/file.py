@@ -27,7 +27,7 @@ def getThisScriptCurrentDirectory():
     callerModuleName = _getCallerModuleName()
     return (os.path.dirname(os.path.realpath(callerModuleName)))
 
-def applyPermissionToPath(path, owner, group, mask, recursive=False):
+def applyPermissionToPath(path, owner, group, mask, onlyChildPathType='', recursive=False):
     '''
     Applies the given Unix file permissions (owner, group, permission mask) to the given path using
     the chown and chmod commands. 
@@ -37,9 +37,20 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     '''
     # Set ownership and permissions using by calling the linux chown and chmod commands
     ownerGroup = "{}:{}".format(owner, group)
+
     if (recursive):    
-        subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
-        subprocess.call(['sudo', 'chmod', mask, '-R', path])
+        if (onlyChildPathType == 'directory'):
+            subprocess.call(['sudo', 'find', path, '-type', 'd', '-exec', 'chown', ownerGroup, '{}', '+'])
+            subprocess.call(['sudo', 'find', path, '-type', 'd', '-exec', 'chmod', mask, '{}', '+'])
+        
+        elif (onlyChildPathType == 'file'):
+            subprocess.call(['sudo', 'find', path, '-type', 'f', '-exec', 'chown', ownerGroup, '{}', '+'])
+            subprocess.call(['sudo', 'find', path, '-type', 'f', '-exec', 'chmod', mask, '{}', '+'])
+
+        else:
+            subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
+            subprocess.call(['sudo', 'chmod', mask, '-R', path])
+
     else:
         subprocess.call(['sudo', 'chown', ownerGroup, path])
         subprocess.call(['sudo', 'chmod', mask, path])
