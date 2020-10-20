@@ -54,7 +54,7 @@ def applyPermissionToPath(path, owner, group, mask, onlyChildPathType='', recurs
     else:
         subprocess.call(['sudo', 'chown', ownerGroup, path])
         subprocess.call(['sudo', 'chmod', mask, path])
-
+        
 def _getCallerModuleName():
     '''
     Returns the name of the caller (of the caller) module. Used by the getThisScriptCurrentDirectory
