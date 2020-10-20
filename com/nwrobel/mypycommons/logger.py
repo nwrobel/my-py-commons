@@ -67,7 +67,7 @@ def initSharedLogger(logDir, logFilename=''):
     if (not logFilename):
         frame = inspect.stack()[1]
         module = inspect.getmodule(frame[0])
-        callerModuleFilename = mypycommons.GetFilename(module.__file__)
+        callerModuleFilename = mypycommons.file.GetFilename(module.__file__)
 
         logFilename = "{}.log".format(callerModuleFilename)
 
