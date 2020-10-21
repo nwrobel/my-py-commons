@@ -12,7 +12,7 @@ import inspect
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.file
 
-global _sharedLogger
+_sharedLogger = None
 
 class SharedLoggerNotInitialized(Exception):
     '''

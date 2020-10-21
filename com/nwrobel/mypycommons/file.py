@@ -317,6 +317,24 @@ def readCSVFile(csvFilePath):
 
     return csvLines
 
+def getTextFileLineCount(filepath):
+    with open(filepath) as f:
+        lineCount = 0
+        for line in f:
+            lineCount += 1
+
+    return lineCount
+
+def removeFirstNLinesFromTextFile(filepath, numLines):
+    with open(filepath) as f:
+        originalLines = f.readlines()
+
+    clearFileContents(filepath)
+
+    with open(filepath, 'w') as f:
+        linesToKeep = originalLines[numLines:]
+        f.writelines(linesToKeep)
+
 # -------------------------------- Private module helper functions ---------------------------------
 #
 def _isFile(pathObj):
