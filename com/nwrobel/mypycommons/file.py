@@ -64,20 +64,26 @@ def _getCallerModuleName():
     module = inspect.getmodule(frm[0])
     return module.__file__
 
-def GetAllFilesAndDirectoriesRecursive(rootPath, useWindowsExtendedPaths=False):
+def GetAllFilesAndDirectoriesRecursive(rootPath, useWindowsExtendedPaths=False, includeRootPath=False):
     '''
     Gets the filepaths of all files AND folders within the given root directory, recursively.
     
     All filepaths will use the extended path syntax, to avoid problems with long filepaths, if this parameter 
     is set.
     '''
-    pathObj = Path(rootPath)
-    children = pathObj.glob('**/*')
+    rootPathObj = Path(rootPath)
+    children = rootPathObj.glob('**/*')
     
     if (useWindowsExtendedPaths):
         paths = [('\\\\?\\' + str(child)) for child in children]
+
+        if (includeRootPath):
+            paths += [('\\\\?\\' + str(rootPathObj))]
     else:
         paths = [str(child) for child in children]
+
+        if (includeRootPath):
+            paths += [(str(rootPathObj)]
 
     return paths
 
