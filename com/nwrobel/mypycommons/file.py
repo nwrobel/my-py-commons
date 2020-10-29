@@ -83,7 +83,7 @@ def GetAllFilesAndDirectoriesRecursive(rootPath, useWindowsExtendedPaths=False, 
         paths = [str(child) for child in children]
 
         if (includeRootPath):
-            paths += [(str(rootPathObj)]
+            paths += [str(rootPathObj)]
 
     return paths
 
