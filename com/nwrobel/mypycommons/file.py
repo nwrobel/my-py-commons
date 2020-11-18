@@ -304,6 +304,16 @@ def writeToFile(filepath, content):
         for item in content:
             outputFile.write("{}\n".format(item))
 
+def readFile(filepath):
+    '''
+    Reads the data line by line from the given file and returns a list of strings representing each
+    line of the file. Newlines in the file will show up as newline characters each string.
+    '''
+    with open(filepath, 'r', encoding='utf-8') as infile:
+        fileLines = infile.readlines()
+        
+    return fileLines
+
 def readJsonFile(filepath):
     '''
     Reads the given Json file and returns a dict or a Json array representing the data.
