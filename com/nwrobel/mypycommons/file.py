@@ -13,6 +13,9 @@ import inspect
 import csv
 import json
 
+from com.nwrobel import mypycommons
+import com.nwrobel.mypycommons.system
+
 def isValidPossibleFilepath(filepath):
     '''
     Checks whether or not the given string is a legal, absolute, valid possible/potential filepath.
@@ -253,32 +256,24 @@ def DecompressSingleGZFile(gzippedFilePath, decompFilePath):
         with open(decompFilePath, 'wb') as outputFile:
             shutil.copyfileobj(inputFile, outputFile)
 
-def compressToArchive(inputFilePath, archiveOutFilePath, archiveType='gz'):
+def create7zArchive(inputFilePath, archiveOutFilePath):
     '''
-    Compresses the given files and/or directories to a tar archive, then compresses this tar into
-    a 7zip archive, given the input filepath(s) and filepath for the archive file. 
-    7zip must be installed on the system and 7z must be in the path.
-
-    Params:
-        inputFilePath: single path of the file or directory to compress, or a list of paths
-        archiveOutFilePath: filepath of the archive file to output to
-        archiveType: type of archive to create - valid types: ['gz', '7z'], gz by default
+    Creates a 7zip archive from the given path(s). 7zip must be installed on the system and 7z 
+    must be in the path for this command to work.
     '''
     if (not isinstance(inputFilePath, list)):
         inputFilePath = [inputFilePath]
 
-    archiveFileParentDir = getParentDirectory(archiveOutFilePath)
-    if (not directoryExists(archiveFileParentDir)):
-        createDirectory(archiveFileParentDir)
+    if (mypycommons.system.thisMachineIsWindowsOS()):
+        sevenZipCommand = 'C:\\Program Files\\7-Zip\\7z.exe'
+    else:
+        sevenZipCommand = '7z'
 
-    if (archiveType == 'gz'):
-        with tarfile.open(archiveOutFilePath, 'w:gz') as archive:
-            for filepath in inputFilePath:
-                archive.add(filepath, arcname=GetFilename(filepath))
-    
-    elif (archiveType == '7z'):
-        sevenZipArgs = ['7z', 'a', '-t7z', '-mx=9', '-mfb=64', '-md=64m', archiveOutFilePath] + inputFilePath
-        subprocess.call(sevenZipArgs)
+    sevenZipArgs = [sevenZipCommand] + ['a', '-t7z', '-mx=9', '-mfb=64', '-md=64m', archiveOutFilePath]
+    for inFilePath in inputFilePath:
+        sevenZipArgs.append(inFilePath)
+        
+    subprocess.call(sevenZipArgs)
 
 def clearFileContents(filepath):
     '''
