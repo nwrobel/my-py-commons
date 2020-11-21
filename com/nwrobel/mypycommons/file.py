@@ -153,8 +153,11 @@ def CopyFilesToDirectory(srcFiles, destDir):
     to that destination. Metadata and permissions are preserved and will be the same as the originals
     for the new file copies.
     '''
-    for file in srcFiles:
-        shutil.copy2(file, destDir)
+    if (not isinstance(srcFiles, list)):
+        srcFiles = [srcFiles]
+
+    for filepath in srcFiles:
+        shutil.copy2(filepath, destDir)
 
 def DeleteFile(filePath):
     '''
