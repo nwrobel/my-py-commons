@@ -99,23 +99,39 @@ def initSharedLogger(logDir, logFilename=''):
     _sharedLogger.addHandler(fh)
     _sharedLogger.addHandler(ch)
 
-
 def setSharedLoggerConsoleOutputLogLevel(logLevel):
     '''
     Modifies the configuration of the shared logger by setting the minimum level of importance (log
     level) that log messages need to have in order to be logged to the console.
     
-    NOTE: this only changes the log level for the console output handler: the log level for the file
-    output handler will not be changed (debug and higher by default).
-
-    This function is useful if the log level needs to be changed later in the script code: for instance, 
-    if the user wants to change it interactively so that the console is not flooded with log messages.
-
     Params:
         - logLevel: one of the following log level string values: debug, info, warning, error
+    '''
     
-    Example: 
-        setSharedLoggerConsoleOutputLogLevel("info")
+    # Get the actual log level from the logging class, given the parameter
+    if (logLevel.lower() == "debug"):
+        level = logging.DEBUG
+    elif (logLevel.lower() == "info"):
+        level = logging.INFO 
+    elif (logLevel.lower() == "warning"):
+        level = logging.WARNING
+    elif (logLevel.lower() == "error"):
+        level = logging.ERROR
+    else:
+        raise TypeError("Invalid value given for parameter 'logLevel': it must be one of the following values: debug, info, error")
+
+    sharedLogger = getSharedLogger()
+    for handler in sharedLogger.handlers:
+        if (handler.__class__.__name__ == 'StreamHandler'):
+            handler.setLevel(level)
+
+def setSharedLoggerFileOutputLogLevel(logLevel):
+    '''
+    Modifies the configuration of the shared logger by setting the minimum level of importance (log
+    level) that log messages need to have in order to be logged to the log file.
+    
+    Params:
+        - logLevel: one of the following log level string values: debug, info, warning, error
     '''
 
     # Get the actual log level from the logging class, given the parameter
@@ -130,8 +146,7 @@ def setSharedLoggerConsoleOutputLogLevel(logLevel):
     else:
         raise TypeError("Invalid value given for parameter 'logLevel': it must be one of the following values: debug, info, error")
 
-    # set the log level for the console handler only
     sharedLogger = getSharedLogger()
     for handler in sharedLogger.handlers:
-        if (handler.__class__.__name__ == 'StreamHandler'):
+        if (handler.__class__.__name__ == 'FileHandler'):
             handler.setLevel(level)
