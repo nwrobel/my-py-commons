@@ -1,3 +1,9 @@
+'''
+com.nwrobel.display 
+
+This module contains functionality related to displaying text or other UI functions (print, etc).
+'''
+
 # Print iterations progress
 # Taken from StackOverflow
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):

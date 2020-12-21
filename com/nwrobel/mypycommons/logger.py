@@ -1,5 +1,5 @@
 '''
-logger.py
+com.nwrobel.logger
 
 Module containing functionality for configuring and retrieving logger instances, which can be used
 as a better alternative to print statements for debugging, info, error, etc purposes.

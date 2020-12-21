@@ -1,4 +1,6 @@
 '''
+com.nwrobel.file 
+
 This module contains functionality related to performing file/directory operations, such as reading,  
 writing, renaming, deleting, and moving.
 '''
