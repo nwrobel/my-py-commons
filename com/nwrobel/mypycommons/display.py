@@ -7,8 +7,10 @@ This module contains functionality related to displaying text or other UI functi
 # Print iterations progress
 # Taken from StackOverflow
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-    """
-    Call in a loop to create terminal progress bar
+    '''
+    Displays a progress bar to stdout/console. 
+
+    Call this inside a loop to make progress bar function.
     @params:
         iteration   - Required  : current iteration (Int)
         total       - Required  : total iterations (Int)
@@ -18,7 +20,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         length      - Optional  : character length of bar (Int)
         fill        - Optional  : bar fill character (Str)
         printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-    """
+    '''
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
