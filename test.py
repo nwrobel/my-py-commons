@@ -1,4 +1,3 @@
-#from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.misc
 import com.nwrobel.mypycommons.system
 
