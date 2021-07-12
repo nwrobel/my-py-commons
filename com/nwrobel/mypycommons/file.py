@@ -377,6 +377,24 @@ def removeFirstNLinesFromTextFile(filepath, numLines):
         linesToKeep = originalLines[numLines:]
         f.writelines(linesToKeep)
 
+def getFileSizeBytes(filepath):
+    '''
+    Returns the size of the given file in bytes.
+
+    @params:
+    filepath: path to the file
+    '''
+    return Path(filepath).stat().st_size
+
+def getFileDateModifiedTimestamp(filepath):
+    '''
+    Returns the date modified timestamp of the given file.
+
+    @params:
+    filepath: path to the file
+    '''
+    return Path(filepath).stat().st_mtime
+
 # -------------------------------- Private module helper functions ---------------------------------
 #
 def _isFile(pathObj):
