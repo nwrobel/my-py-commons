@@ -26,13 +26,14 @@ def extractSingleFileGZArchive(archiveFilepath, outputFilepath):
         with open(outputFilepath, 'wb') as outputFile:
             shutil.copyfileobj(inputFile, outputFile)
 
-def create7zArchive(inputFilePath, archiveOutFilePath):
+def create7zArchive(inputFilePath, archiveOutFilePath, sevenZipCommand=''):
     '''
     Compresses the given paths into a 7zip archive with maximum compression settings.
     
     @params
     inputFilePath: (str or list) the input path(s) to compress into an archive
     archiveOutFilePath: the filepath of the output archive file (should include the .7z extension)
+    sevenZipCommand: (optional) string of the command used to execute 7z on this system
     
     @notes
     7zip must be installed on the system and 7z must be in the path for this command to work.
@@ -40,10 +41,12 @@ def create7zArchive(inputFilePath, archiveOutFilePath):
     if (not isinstance(inputFilePath, list)):
         inputFilePath = [inputFilePath]
 
-    if (mypycommons.system.thisMachineIsWindowsOS()):
-        sevenZipCommand = 'C:\\Program Files\\7-Zip\\7z.exe'
-    else:
-        sevenZipCommand = '7z'
+    # Use default 7z executable filepath (differs for Linux and Windows) if one is not specified
+    if (not sevenZipCommand):
+        if (mypycommons.system.thisMachineIsWindowsOS()):
+            sevenZipCommand = 'C:\\Program Files\\7-Zip\\7z.exe'
+        else:
+            sevenZipCommand = '7z'
 
     sevenZipArgs = [sevenZipCommand] + ['a', '-t7z', '-mx=9', '-mfb=64', '-md=64m', archiveOutFilePath]
     for inFilePath in inputFilePath:

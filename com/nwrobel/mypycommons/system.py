@@ -4,6 +4,7 @@ com.nwrobel.system
 This module contains functionality related to operating systems and their operations.
 '''
 
+import socket
 import os
 
 def thisMachineIsWindowsOS():
@@ -14,3 +15,6 @@ def thisMachineIsWindowsOS():
         return True
     else:
         return False
+
+def getThisMachineName():
+    return socket.gethostname()
