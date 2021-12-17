@@ -146,10 +146,11 @@ def getCurrentTimestampForFilename():
     Returns the current time, formatted in such a way as to allow it to be used as a string in file
     names. This is useful for applying archive timestamps to files through their name.
 
-    Example output: "2012-01-27 02_29_33"
+    Example output: "2012-01-27 02.29.33"
     '''
-    timeForFilename = getCurrentFormattedTime().replace(':', '_')
-    return timeForFilename
+    timeFmt = getCurrentFormattedTime().replace(':', '.')
+    timeFilename = "[{}]".format(timeFmt)
+    return timeFilename
 
 
 
