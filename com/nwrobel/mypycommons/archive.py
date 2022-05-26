@@ -8,7 +8,7 @@ import subprocess
 import gzip
 import shutil
 from com.nwrobel import mypycommons
-#import com.nwrobel.mypycommons.system
+import com.nwrobel.mypycommons.system
 
 def extractSingleFileGZArchive(archiveFilepath, outputFilepath):
     '''
