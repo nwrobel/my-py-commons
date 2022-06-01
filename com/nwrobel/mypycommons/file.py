@@ -249,7 +249,6 @@ def applyPermissionToPath(path, owner, group, mask, applyToPathType='', recursiv
     path: the full path to the file or directory
     owner: the system username to apply as the owner
     group: the system groupname to apply as the group
-    applyToPathType: optional, "file" or "dir" to apply permission to only files or only directories
     recursive: if true, sets the permissions to a directory recursively
 
     @notes
@@ -261,17 +260,8 @@ def applyPermissionToPath(path, owner, group, mask, applyToPathType='', recursiv
     ownerGroup = "{}:{}".format(owner, group)
 
     if (recursive):    
-        if (applyToPathType == 'dir'):
-            subprocess.call(['sudo', 'find', path, '-type', 'd', '-exec', 'chown', ownerGroup, '{}', '+'])
-            subprocess.call(['sudo', 'find', path, '-type', 'd', '-exec', 'chmod', mask, '{}', '+'])
-        
-        elif (applyToPathType == 'file'):
-            subprocess.call(['sudo', 'find', path, '-type', 'f', '-exec', 'chown', ownerGroup, '{}', '+'])
-            subprocess.call(['sudo', 'find', path, '-type', 'f', '-exec', 'chmod', mask, '{}', '+'])
-
-        else:
-            subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
-            subprocess.call(['sudo', 'chmod', mask, '-R', path])
+        subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
+        subprocess.call(['sudo', 'chmod', mask, '-R', path])
 
     else:
         subprocess.call(['sudo', 'chown', ownerGroup, path])
