@@ -329,7 +329,8 @@ def readCSVFile(filepath):
     '''
     csvLines = []
     with open(filepath, mode='r') as csvFile:
-        csvReader = csv.DictReader(csvFile)
+        iterCleanLines = _filterCSVLinesForIterator(csvFile)
+        csvReader = csv.DictReader(iterCleanLines)
 
         for line in csvReader:
             csvLines.append(line)
@@ -426,4 +427,18 @@ def _getCallerModuleName():
     module = inspect.getmodule(frm[0])
     return module.__file__
 
+def _CSVLineIsComment(line):
+    return line.startswith('#')
+
+def _CSVLineIsEmpty(line):
+    line = line.strip()
+    if (not line or line.isspace()):
+        return True
+    else:
+        return False
+
+def _filterCSVLinesForIterator(inFileIterator):
+    for line in inFileIterator:
+        if (not _CSVLineIsComment(line) and not _CSVLineIsEmpty(line)):
+            yield line
 
