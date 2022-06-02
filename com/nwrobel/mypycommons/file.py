@@ -240,7 +240,7 @@ def getFileBaseName(filepath):
     filePathObject = Path(filepath)
     return filePathObject.stem
 
-def applyPermissionToPath(path, owner, group, mask, applyToPathType='', recursive=False):
+def applyPermissionToPath(path, owner, group, mask, recursive=False):
     '''
     Applies the given Unix file permissions (owner, group, permission mask) to the given path using
     the chown and chmod commands. 
@@ -249,6 +249,7 @@ def applyPermissionToPath(path, owner, group, mask, applyToPathType='', recursiv
     path: the full path to the file or directory
     owner: the system username to apply as the owner
     group: the system groupname to apply as the group
+    mask: the octal mask to apply to the path
     recursive: if true, sets the permissions to a directory recursively
 
     @notes
@@ -278,7 +279,7 @@ def clearFileContents(filepath):
     deletePath(filepath)
     open(filepath, 'wb').close()
 
-def writeToFile(filepath, content):
+def writeToFile(filepath, content, append=False):
     '''
     Writes the given data/content to the given file.
 
@@ -286,11 +287,17 @@ def writeToFile(filepath, content):
     filepath: path to the output file
     content: data to be written to the file - must be either a string or a list of strings. Lists
         are written to the file with one string list item per line
+    append: add the content to the end of the existing file, instead of replacing file contents on
+        write if data exists
     '''
     if (isinstance(content, str)):
         content = [content]
 
-    with open(filepath, 'w', encoding='utf-8') as outputFile:
+    writeMode = "w"
+    if (append):
+        writeMode = "a"
+
+    with open(filepath, writeMode, encoding='utf-8') as outputFile:
         for item in content:
             outputFile.write("{}\n".format(item))
 
