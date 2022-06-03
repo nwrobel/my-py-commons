@@ -53,3 +53,23 @@ def create7zArchive(inputFilePath, archiveOutFilePath, sevenZipCommand=''):
         sevenZipArgs.append(inFilePath)
         
     subprocess.call(sevenZipArgs)
+
+def createTarArchive(inputFilePath, archiveOutFilePath):
+    '''
+    Compresses the given paths into a TAR archive. This function only works on Linux machines.
+    
+    @params
+    inputFilePath: (str or list) the input path(s) to compress into an archive
+    archiveOutFilePath: the filepath of the output archive file (should include the .tar extension)
+    '''
+    if (not isinstance(inputFilePath, list)):
+        inputFilePath = [inputFilePath]
+
+    if (mypycommons.system.thisMachineIsWindowsOS()):
+        raise Exception("createTarArchive function is not supported on Windows machines (only works on Linux-type machines)")
+
+    tarArgs = ['tar', 'cvf', archiveOutFilePath]
+    for inFilePath in inputFilePath:
+        tarArgs.append(inFilePath)
+        
+    subprocess.call(tarArgs)
