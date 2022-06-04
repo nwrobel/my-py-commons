@@ -9,6 +9,13 @@ import gzip
 import shutil
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.system
+import com.nwrobel.mypycommons.file
+
+class ArchiveSourcePathNotFoundError(Exception):
+    '''
+    '''
+    def __init__(self, message):            
+        super().__init__(message)
 
 def extractSingleFileGZArchive(archiveFilepath, outputFilepath):
     '''
@@ -41,6 +48,10 @@ def create7zArchive(inputFilePath, archiveOutFilePath, sevenZipCommand=''):
     if (not isinstance(inputFilePath, list)):
         inputFilePath = [inputFilePath]
 
+    for filePath in inputFilePath:
+        if (not mypycommons.file.pathExists(filePath)):
+            raise ArchiveSourcePathNotFoundError("The given source path was not found ({}), unable to create archive".format(filePath))
+
     # Use default 7z executable filepath (differs for Linux and Windows) if one is not specified
     if (not sevenZipCommand):
         if (mypycommons.system.thisMachineIsWindowsOS()):
@@ -64,6 +75,10 @@ def createTarArchive(inputFilePath, archiveOutFilePath):
     '''
     if (not isinstance(inputFilePath, list)):
         inputFilePath = [inputFilePath]
+
+    for filePath in inputFilePath:
+        if (not mypycommons.file.pathExists(filePath)):
+            raise ArchiveSourcePathNotFoundError("The given source path was not found ({}), unable to create archive".format(filePath))
 
     if (mypycommons.system.thisMachineIsWindowsOS()):
         raise Exception("createTarArchive function is not supported on Windows machines (only works on Linux-type machines)")

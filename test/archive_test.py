@@ -22,7 +22,7 @@ class Archive_ModuleTest(unittest.TestCase):
         thisDirectory = mypycommons.file.getThisScriptCurrentDirectory()
         testDataDir = mypycommons.file.joinPaths(thisDirectory, 'data')
 
-        self.tempDir = testDataDir = mypycommons.file.joinPaths(thisDirectory, '~temp')
+        self.tempDir = mypycommons.file.joinPaths(thisDirectory, '~temp')
         mypycommons.file.createDirectory(self.tempDir)
 
         self.archiveInputDirPath = mypycommons.file.joinPaths(testDataDir, 'test-archive-input-dir')
@@ -49,6 +49,13 @@ class Archive_ModuleTest(unittest.TestCase):
 
         self.assertTrue(mypycommons.file.pathExists(testArchiveOutFilepath))
         print("Place breakpoint here and check archives manually")
+
+    def test_create7zArchive(self):
+        testArchiveOutFilename = 'test-out-1.7z'
+        testArchiveOutFilepath = mypycommons.file.joinPaths(self.tempDir, testArchiveOutFilename)
+        mypycommons.archive.create7zArchive(self.archiveInputFilepath, testArchiveOutFilepath)
+
+        self.assertTrue(mypycommons.file.pathExists(testArchiveOutFilepath))
 
 if __name__ == '__main__':
     unittest.main()
