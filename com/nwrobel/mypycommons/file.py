@@ -166,9 +166,16 @@ def copyToDirectory(path, destDir):
 
     @params
     path: (str) the path (file or folder) to copy to the dir
-    destDir: path of the target directory to copy to
+    destDir: (str) path of the target directory to copy to
     '''
-    shutil.copy2(path, destDir)
+    if (isFile(path)):
+        shutil.copy2(path, destDir)
+    elif (isDirectory(path)):
+        sourceDirName = getFilename(path)
+        newDirFilepath = joinPaths(destDir, sourceDirName)
+        shutil.copytree(path, newDirFilepath)
+    else:
+        raise Exception("The given path is invalid")
 
 def deletePath(path):
     '''
@@ -183,6 +190,20 @@ def deletePath(path):
         os.remove(path)
     elif (_isDir(pathObj)):
         shutil.rmtree(path)
+
+def renamePath(path, newName):
+    '''
+    Renames a single file or directory. Note: If given a file, this function will rename the entire
+    name (base name and file extension) to the given name. So, if you want the file to have an 
+    extension, you need to provide it in the new name given.
+
+    @params
+    path: (str) the path (file or folder) to rename
+    newName: (str) the new name to give to the file or folder
+    '''
+    pathObj = Path(path)
+    pathObj.rename(Path(pathObj.parent, newName))
+
 
 def getParentDirectory(path, useWindowsExtendedPaths=False):
     '''
