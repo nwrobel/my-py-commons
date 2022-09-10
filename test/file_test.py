@@ -72,3 +72,13 @@ class File_ModuleTest(unittest.TestCase):
             self.assertTrue(newPath1[-1] != '/' and newPath1[-1] != '\\')
             self.assertTrue(newPath2[-1] != '/' and newPath2[-1] != '\\')
 
+    def test_getParentDirectory(self):
+        '''
+        '''
+        testPath = 'C:\\local\\data\\new\\file.txt'
+        parentPath = mypycommons.file.getParentDirectoryPath(testPath)
+
+        self.assertEqual(parentPath, 'C:\\local\\data\\new')
+
+    
+

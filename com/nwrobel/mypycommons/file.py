@@ -205,9 +205,9 @@ def renamePath(path, newName):
     pathObj.rename(Path(pathObj.parent, newName))
 
 
-def getParentDirectory(path, useWindowsExtendedPaths=False):
+def getParentDirectoryPath(path, useWindowsExtendedPaths=False):
     '''
-    Given a path, returns the parent directory. 
+    Given a path, returns the path of the parent directory. 
 
     @params
     path: (str) the path (file or folder) to find the parent of
@@ -217,11 +217,12 @@ def getParentDirectory(path, useWindowsExtendedPaths=False):
     filePathObject = Path(path)
 
     if (useWindowsExtendedPaths):
-        parentDir = '\\\\?\\' + str(filePathObject.parent)
+        parentDirPath = '\\\\?\\' + str(filePathObject.parent)
     else:
-        parentDir = str(filePathObject.parent)
+        parentDirPath = str(filePathObject.parent)
 
-    return parentDir
+    parentDirPath = removeTrailingSlashFromPath(parentDirPath)
+    return parentDirPath
 
 def getFilename(filepath):
     '''
