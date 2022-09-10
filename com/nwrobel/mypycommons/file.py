@@ -360,8 +360,8 @@ def writeJsonFile(filepath, contents):
     if (pathExists(filepath)):
         raise ValueError("The given filepath of the json file to write already exists")
 
-    with open(filepath, 'w') as f:
-        json.dump(contents, f)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(contents, f, indent=4)
 
 def readCSVFile(filepath):
     '''
