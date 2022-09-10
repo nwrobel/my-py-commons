@@ -414,6 +414,20 @@ def getFileDateModifiedTimestamp(filepath):
     '''
     return Path(filepath).stat().st_mtime
 
+def removeTrailingSlashFromPath(path):
+    '''
+    Returns the given path without a '/' or '\' at the end. If the path does not end with these,
+    the path is simply returned, making this function safe to call on all paths in order to normalize
+    them to an expected format (without trailing slash).
+
+    @params:
+    path: a path string
+    '''
+    if (path[-1] == '/' or path[-1] == '\\'):
+        path = path[:-1] # remove last char. from string
+        
+    return path
+
 # -------------------------------- Private module helper functions ---------------------------------
 #
 def _isFile(pathObj):

@@ -57,3 +57,18 @@ class File_ModuleTest(unittest.TestCase):
         
         newTestDirFilepath = mypycommons.file.joinPaths(self.tempDir, testDirNewName)
         self.assertTrue(mypycommons.file.pathExists(newTestDirFilepath))
+
+    def test_removeTrailingSlashFromPath(self):
+        '''
+        '''
+        testPathsNoTrailingSlash = ['/a/sample/linux/path', 'D:\\a\\sample\\windows\\path']
+        testPathsTrailingSlash = ['/a/sample/linux/path/', 'D:\\a\\sample\\windows\\path\\']
+
+        for i in range(0, 2):
+            newPath1 = mypycommons.file.removeTrailingSlashFromPath(testPathsNoTrailingSlash[i])
+            newPath2 = mypycommons.file.removeTrailingSlashFromPath(testPathsTrailingSlash[i])
+
+            self.assertEqual(newPath1, newPath2)
+            self.assertTrue(newPath1[-1] != '/' and newPath1[-1] != '\\')
+            self.assertTrue(newPath2[-1] != '/' and newPath2[-1] != '\\')
+
