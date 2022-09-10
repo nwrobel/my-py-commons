@@ -322,15 +322,16 @@ def writeToFile(filepath, content, append=False):
         for item in content:
             outputFile.write("{}\n".format(item))
 
-def readFile(filepath):
+def readFile(filepath, encoding='utf-8'):
     '''
     Reads the data line by line from the given file and returns a list of strings representing each
     line of the file. Newlines in the file will show up as newline characters in each string in the list.
 
     @params:
-    filepath: path to the file   
+    filepath: path to the file  
+    encoding: (optional) the encoding to use to read the text of the file as, default is utf-8 
     '''
-    with open(filepath, 'r', encoding='utf-8') as infile:
+    with open(filepath, 'r', encoding=encoding) as infile:
         fileLines = infile.readlines()
         
     return fileLines
