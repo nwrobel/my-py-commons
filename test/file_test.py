@@ -80,5 +80,14 @@ class File_ModuleTest(unittest.TestCase):
 
         self.assertEqual(parentPath, 'C:\\local\\data\\new')
 
-    
+    def test_writeJsonFile(self):
+        '''
+        '''
+        testOutputPath = mypycommons.file.joinPaths(self.tempDir, 'output.json')
+        testContents = [{ 'a': 'b', 'c': 'd' }, { 'a': 'b', 'c': 'd' }]
 
+        mypycommons.file.writeJsonFile(testOutputPath, testContents)
+        self.assertTrue(mypycommons.file.pathExists(testOutputPath))
+
+        actualJsonFileData = mypycommons.file.readJsonFile(testOutputPath)
+        self.assertEqual(testContents, actualJsonFileData)

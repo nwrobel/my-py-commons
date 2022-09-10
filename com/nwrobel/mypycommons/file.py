@@ -349,6 +349,20 @@ def readJsonFile(filepath):
 
     return data
 
+def writeJsonFile(filepath, contents):
+    '''
+    Writes the given content to a Json file. Throws an exception if the filepath already exists.
+
+    @params:
+    filepath: path of the json file to be written
+    contents: dict or a list containing objects that are json serializable (like another dict)  
+    '''
+    if (pathExists(filepath)):
+        raise ValueError("The given filepath of the json file to write already exists")
+
+    with open(filepath, 'w') as f:
+        json.dump(contents, f)
+
 def readCSVFile(filepath):
     '''
     Reads the given CSV file and returns a list of arrays, each of which represent a row in the
