@@ -12,6 +12,18 @@ import inspect
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.file
 
+class LogLevel:
+    DEBUG = 1
+    INFO = 2
+    WARNING = 3
+    ERROR = 4
+
+def getLogger(loggerName):
+    '''
+    Returns a logger instance by name. Does the same as "logging.getLogger(loggerName)"
+    '''
+    return logging.getLogger(loggerName)
+
 def configureLoggerWithBasicSettings(loggerName, logDir, logFilename=''):
     '''
     Configures the given logger instance, specified by name.
@@ -29,7 +41,7 @@ def configureLoggerWithBasicSettings(loggerName, logDir, logFilename=''):
     logFilename: (optional) Name of the log file to which the file handler will output the log messages.
             By default, uses the name of the calling script + the .log file extension.
     '''
-    loggerSpecified = logging.getLogger(loggerName)
+    loggerSpecified = getLogger(loggerName)
 
     # allow all messages of all levels to be passed to the handlers: the handlers will have their
     # own levels set, where they can individually decide which messages to print for a more granular
@@ -70,21 +82,12 @@ def setLoggerConsoleOutputLogLevel(loggerName, logLevel):
     
     @params:
     loggerName: name of the logger, used to retrieve the desired logger instance
-    logLevel: one of the following log level string values: debug, info, warning, error
+    logLevel: a valid value from the LogLevel type enum class
     '''
-    loggerSpecified = logging.getLogger(loggerName)
+    loggerSpecified = getLogger(loggerName)
 
-    # Get the actual log level from the logging class, given the parameter
-    if (logLevel.lower() == "debug"):
-        level = logging.DEBUG
-    elif (logLevel.lower() == "info"):
-        level = logging.INFO 
-    elif (logLevel.lower() == "warning"):
-        level = logging.WARNING
-    elif (logLevel.lower() == "error"):
-        level = logging.ERROR
-    else:
-        raise TypeError("Invalid value given for parameter 'logLevel': it must be one of the following values: debug, info, warning, error")
+    # Get the actual log level from the logging class, given the LogLevel type param
+    level = _getLoggerLevel(logLevel)
 
     for handler in loggerSpecified.handlers:
         if (handler.__class__.__name__ == 'StreamHandler'):
@@ -97,22 +100,29 @@ def setLoggerFileOutputLogLevel(loggerName, logLevel):
     
     @params:
     loggerName: name of the logger, used to retrieve the desired logger instance
-    logLevel: one of the following log level string values: debug, info, warning, error
+    logLevel: a valid value from the LogLevel type enum class
     '''
-    loggerSpecified = logging.getLogger(loggerName)
+    loggerSpecified = getLogger(loggerName)
 
-    # Get the actual log level from the logging class, given the parameter
-    if (logLevel.lower() == "debug"):
-        level = logging.DEBUG
-    elif (logLevel.lower() == "info"):
-        level = logging.INFO 
-    elif (logLevel.lower() == "warning"):
-        level = logging.WARNING
-    elif (logLevel.lower() == "error"):
-        level = logging.ERROR
-    else:
-        raise TypeError("Invalid value given for parameter 'logLevel': it must be one of the following values: debug, info, warning, error")
+    # Get the actual log level from the logging class, given the LogLevel type param
+    level = _getLoggerLevel(logLevel)
 
     for handler in loggerSpecified.handlers:
         if (handler.__class__.__name__ == 'FileHandler'):
             handler.setLevel(level)
+
+def _getLoggerLevel(logLevel):
+    if (logLevel == LogLevel.DEBUG):
+        return logging.DEBUG
+
+    elif (logLevel == LogLevel.INFO):
+        return logging.INFO 
+
+    elif (logLevel == LogLevel.WARNING):
+        return logging.WARNING
+
+    elif (logLevel == LogLevel.ERROR):
+        return logging.ERROR
+
+    else:
+        raise TypeError("Invalid value given for parameter 'logLevel': it must be a value of the LogLevel enum class")
