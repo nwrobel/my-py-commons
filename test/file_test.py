@@ -61,10 +61,10 @@ class File_ModuleTest(unittest.TestCase):
     def test_removeTrailingSlashFromPath(self):
         '''
         '''
-        testPathsNoTrailingSlash = ['/a/sample/linux/path', 'D:\\a\\sample\\windows\\path']
-        testPathsTrailingSlash = ['/a/sample/linux/path/', 'D:\\a\\sample\\windows\\path\\']
+        testPathsNoTrailingSlash = ['/a/sample/linux/path', 'D:\\a\\sample\\windows\\path', 'D:\\', 'D:\\\\']
+        testPathsTrailingSlash = ['/a/sample/linux/path/', 'D:\\a\\sample\\windows\\path\\', 'D:', 'D:']
 
-        for i in range(0, 2):
+        for i in range(0, len(testPathsNoTrailingSlash)):
             newPath1 = mypycommons.file.removeTrailingSlashFromPath(testPathsNoTrailingSlash[i])
             newPath2 = mypycommons.file.removeTrailingSlashFromPath(testPathsTrailingSlash[i])
 

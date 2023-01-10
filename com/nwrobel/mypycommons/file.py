@@ -434,12 +434,15 @@ def removeTrailingSlashFromPath(path):
     '''
     Returns the given path without a '/' or '\' at the end. If the path does not end with these,
     the path is simply returned, making this function safe to call on all paths in order to normalize
-    them to an expected format (without trailing slash).
+    them to an expected format (without trailing slash). 
+
+    Windows paths that consist of only a drive letter  will also have the last slash removed 
+    (ex: D:\ --> D:)
 
     @params:
     path: a path string
     '''
-    if (path[-1] == '/' or path[-1] == '\\'):
+    while (path[-1] == '/' or path[-1] == '\\'):
         path = path[:-1] # remove last char. from string
         
     return path
