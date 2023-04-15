@@ -59,7 +59,7 @@ def create7zArchive(inputFilePath, archiveOutFilePath, sevenZipCommand=''):
         else:
             sevenZipCommand = '7z'
 
-    sevenZipArgs = [sevenZipCommand] + ['a', '-t7z', '-mx=9', '-mfb=64', '-md=64m', '-mtc', '-mta', '-mtm', archiveOutFilePath]
+    sevenZipArgs = [sevenZipCommand] + ['a', '-t7z', '-mx=7', '-mfb=64', '-md=64m', '-mtc', '-mta', '-mtm', archiveOutFilePath]
     for inFilePath in inputFilePath:
         sevenZipArgs.append(inFilePath)
         
