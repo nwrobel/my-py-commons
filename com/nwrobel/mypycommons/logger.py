@@ -19,7 +19,7 @@ class LogLevel:
     ERROR = 4
 
 class CommonLogger:
-    def __init__(self, loggerName: str, logDir: str, logFilename: str = ''):
+    def __init__(self, loggerName: str, logDir: str, logFilename: str):
         self.loggerName = loggerName
         self.logDir = logDir
         self.logFilename = logFilename
@@ -74,15 +74,6 @@ class CommonLogger:
         # own levels set, where they can individually decide which messages to print for a more granular
         # logging control
         self._loggerObj.setLevel(logging.INFO) 
-
-        # If no log filename was given,
-        # get the name of the module/file that called this function so we can use it to be the log file name
-        if (not self.logFilename):
-            frame = inspect.stack()[1]
-            module = inspect.getmodule(frame[0])
-            callerModuleFilename = mypycommons.file.getFilename(module.__file__)
-
-            self.logFilename = "{}.log".format(callerModuleFilename)
 
         # create a file handler which logs all messages by default by saving them to a log file
         self.logFilepath = mypycommons.file.joinPaths(self.logDir, self.logFilename)

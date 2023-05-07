@@ -28,7 +28,7 @@ class Logger_ModuleTest(unittest.TestCase):
         mypycommons.file.deletePath(self.tempDir)
 
     def test_logger(self):
-        loggerWrapper = mypycommons.logger.CommonLogger("mainlogger", logDir=self.tempDir)
+        loggerWrapper = mypycommons.logger.CommonLogger("mainlogger", logDir=self.tempDir, logFilename=__name__)
         loggerWrapper.setConsoleOutputLogLevel(mypycommons.logger.LogLevel.DEBUG)
         loggerWrapper.setFileOutputLogLevel(mypycommons.logger.LogLevel.DEBUG)
         logger = loggerWrapper.getLogger()
