@@ -149,7 +149,7 @@ def getCurrentTimestampForFilename():
     Example output: "2012-01-27 02.29.33"
     '''
     timeFmt = getCurrentFormattedTime().replace(':', '.')
-    timeFilename = "[{}]".format(timeFmt)
+    timeFilename = "{}".format(timeFmt)
     return timeFilename
 
 
