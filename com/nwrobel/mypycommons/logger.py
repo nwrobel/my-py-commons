@@ -18,111 +18,105 @@ class LogLevel:
     WARNING = 3
     ERROR = 4
 
-def getLogger(loggerName):
-    '''
-    Returns a logger instance by name. Does the same as "logging.getLogger(loggerName)"
-    '''
-    return logging.getLogger(loggerName)
+class CommonLogger:
+    def __init__(self, loggerName: str, logDir: str, logFilename: str = ''):
+        self.loggerName = loggerName
+        self.logDir = logDir
+        self.logFilename = logFilename
+        self.logFilepath = ''
 
-def configureLoggerWithBasicSettings(loggerName, logDir, logFilename=''):
-    '''
-    Configures the given logger instance, specified by name.
-    Logger will send all log statements to the console and to a log file in the specified directory.
+        if (not mypycommons.file.pathExists(self.logDir)):
+            raise ValueError("Given logDir path does not exist")
 
-    Configuration applied: 
-    - the logger will allow all messages to be passed to the handlers (debug or higher)
-    - the logger has two handlers, which define how the messages should be output, which ones to output, etc:
-        - a file handler, which writes all messages (debug or higher) to a log file
-        - a stream (console output) handler, which outputs all messages (debug or higher) to the console/stdout
+        self._loggerObj = logging.getLogger(self.loggerName)
+        self._configureWithBasicSettings()
 
-    @params:
-    loggerName: name of the logger, used to retrieve the desired logger instance
-    logDir: directory in which to store the log file
-    logFilename: (optional) Name of the log file to which the file handler will output the log messages.
-            By default, uses the name of the calling script + the .log file extension.
-    '''
-    loggerSpecified = getLogger(loggerName)
+    def getLogger(self):
+        '''
+        Returns a logger instance by name. Does the same as "logging.getLogger(loggerName)"
+        '''
+        return self._loggerObj
 
-    # allow all messages of all levels to be passed to the handlers: the handlers will have their
-    # own levels set, where they can individually decide which messages to print for a more granular
-    # logging control
-    loggerSpecified.setLevel(logging.DEBUG) 
+    def setConsoleOutputLogLevel(self, logLevel: LogLevel):
+        '''
+        Modifies the configuration of the logger by setting the minimum level of importance (log
+        level) that log messages need to have in order to be logged to the console.
+        '''
+        level = self._getLoggerLevel(logLevel)
 
-    # If no log filename was given,
-    # get the name of the module/file that called this function so we can use it to be the log file name
-    if (not logFilename):
-        frame = inspect.stack()[1]
-        module = inspect.getmodule(frame[0])
-        callerModuleFilename = mypycommons.file.getFilename(module.__file__)
+        for handler in self._loggerObj.handlers:
+            if (handler.__class__.__name__ == 'StreamHandler'):
+                handler.setLevel(level)
 
-        logFilename = "{}.log".format(callerModuleFilename)
+    def setFileOutputLogLevel(self, logLevel: LogLevel):
+        '''
+        Modifies the configuration of the logger by setting the minimum level of importance (log
+        level) that log messages need to have in order to be logged to the log file.
+        '''
+        level = self._getLoggerLevel(logLevel)
 
-    # create a file handler which logs all messages by default by saving them to a log file
-    logFilepath = mypycommons.file.joinPaths(logDir, logFilename)
-    fh = logging.FileHandler(logFilepath, encoding='utf-8')
-    fh.setLevel(logging.DEBUG)
+        for handler in self._loggerObj.handlers:
+            if (handler.__class__.__name__ == 'FileHandler'):
+                handler.setLevel(level)
 
-    # create console output handler which logs all messages (debug up through critical)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    def _configureWithBasicSettings(self):
+        '''
+        Configures the logger instance.
+        Logger will send all log statements to the console and to a log file in the log directory.
 
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter("%(asctime)s - [%(filename)s,  %(funcName)s()] - %(levelname)s - %(message)s")
-    fh.setFormatter(formatter)
-    ch.setFormatter(formatter)
+        Configuration applied: 
+        - the logger will allow all messages to be passed to the handlers (info or higher)
+        - the logger has two handlers, which define how the messages should be output, which ones to output, etc:
+            - a file handler, which writes messages to a log file
+            - a stream (console output) handler, which outputs messages to the console/stdout
+        '''
+        # allow all messages of all levels to be passed to the handlers: the handlers will have their
+        # own levels set, where they can individually decide which messages to print for a more granular
+        # logging control
+        self._loggerObj.setLevel(logging.INFO) 
 
-    # add the handlers to the logger
-    loggerSpecified.addHandler(fh)
-    loggerSpecified.addHandler(ch)
+        # If no log filename was given,
+        # get the name of the module/file that called this function so we can use it to be the log file name
+        if (not self.logFilename):
+            frame = inspect.stack()[1]
+            module = inspect.getmodule(frame[0])
+            callerModuleFilename = mypycommons.file.getFilename(module.__file__)
 
-def setLoggerConsoleOutputLogLevel(loggerName, logLevel):
-    '''
-    Modifies the configuration of the given logger by setting the minimum level of importance (log
-    level) that log messages need to have in order to be logged to the console.
-    
-    @params:
-    loggerName: name of the logger, used to retrieve the desired logger instance
-    logLevel: a valid value from the LogLevel type enum class
-    '''
-    loggerSpecified = getLogger(loggerName)
+            self.logFilename = "{}.log".format(callerModuleFilename)
 
-    # Get the actual log level from the logging class, given the LogLevel type param
-    level = _getLoggerLevel(logLevel)
+        # create a file handler which logs all messages by default by saving them to a log file
+        self.logFilepath = mypycommons.file.joinPaths(self.logDir, self.logFilename)
+        fh = logging.FileHandler(self.logFilepath, encoding='utf-8')
+        fh.setLevel(logging.INFO)
 
-    for handler in loggerSpecified.handlers:
-        if (handler.__class__.__name__ == 'StreamHandler'):
-            handler.setLevel(level)
+        # create console output handler which logs all messages 
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.INFO)
 
-def setLoggerFileOutputLogLevel(loggerName, logLevel):
-    '''
-    Modifies the configuration of the given logger by setting the minimum level of importance (log
-    level) that log messages need to have in order to be logged to the log file.
-    
-    @params:
-    loggerName: name of the logger, used to retrieve the desired logger instance
-    logLevel: a valid value from the LogLevel type enum class
-    '''
-    loggerSpecified = getLogger(loggerName)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter("%(asctime)s - [%(filename)s,  %(funcName)s()] - %(levelname)s - %(message)s")
+        fh.setFormatter(formatter)
+        ch.setFormatter(formatter)
 
-    # Get the actual log level from the logging class, given the LogLevel type param
-    level = _getLoggerLevel(logLevel)
+        # add the handlers to the logger
+        self._loggerObj.addHandler(fh)
+        self._loggerObj.addHandler(ch)
 
-    for handler in loggerSpecified.handlers:
-        if (handler.__class__.__name__ == 'FileHandler'):
-            handler.setLevel(level)
+    def _getLoggerLevel(self, logLevel: LogLevel):
+        '''
+        Get the actual log level from the logging class, given the LogLevel type param
+        '''
+        if (logLevel == LogLevel.DEBUG):
+            return logging.DEBUG
 
-def _getLoggerLevel(logLevel):
-    if (logLevel == LogLevel.DEBUG):
-        return logging.DEBUG
+        elif (logLevel == LogLevel.INFO):
+            return logging.INFO 
 
-    elif (logLevel == LogLevel.INFO):
-        return logging.INFO 
+        elif (logLevel == LogLevel.WARNING):
+            return logging.WARNING
 
-    elif (logLevel == LogLevel.WARNING):
-        return logging.WARNING
+        elif (logLevel == LogLevel.ERROR):
+            return logging.ERROR
 
-    elif (logLevel == LogLevel.ERROR):
-        return logging.ERROR
-
-    else:
-        raise TypeError("Invalid value given for parameter 'logLevel': it must be a value of the LogLevel enum class")
+        else:
+            raise TypeError("Invalid value given for parameter 'logLevel': it must be a value of the com.nwrobel.mypycommons.logger2.LogLevel enum class")
