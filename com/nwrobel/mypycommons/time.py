@@ -50,6 +50,13 @@ def formatTimestampForDisplay(timestamp):
     formattedTime = datetime.datetime.strptime(str(dt), "%Y-%m-%d %H:%M:%S")
     return str(formattedTime)
 
+def formatDatetimeForDisplay(datetime: datetime.datetime) -> str:
+    ''' 
+    Converts a datetime object into a human-readable string.
+    Format is: YYYY-MM-DD HH-MM-SS (ex: "2012-01-27 02:29:33")
+    ''' 
+    return datetime.strftime("%Y-%m-%d %H:%M:%S")
+
 def getTimestampFromFormattedTime(formattedTime):
     '''
     Converts the given formatted time string, formatted as YYYY-MM-DD HH-MM-SS (ex: "2012-01-27 02:29:33")
