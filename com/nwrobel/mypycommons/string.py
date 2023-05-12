@@ -17,3 +17,9 @@ def stringStartsWith(inputString, startsWith):
         return True
     else:
         return False
+
+def stringIsNullOrEmpty(inputString: str) -> bool:
+    ''' 
+    Checks whether or not a string is None or empty.
+    ''' 
+    return (inputString is None or not inputString)
