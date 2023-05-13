@@ -13,6 +13,10 @@ import csv
 import json
 import subprocess
 
+from com.nwrobel import mypycommons
+import com.nwrobel.mypycommons.utils
+
+
 def getThisScriptCurrentDirectory():
     '''
     Returns the current directory that this current script (the one being executed) is located in.
@@ -442,8 +446,14 @@ def removeTrailingSlashFromPath(path):
     @params:
     path: a path string
     '''
+    if (com.nwrobel.mypycommons.utils.stringIsNullOrEmpty(path)):
+        raise ValueError('path is null or empty string')
+
     while (path[-1] == '/' or path[-1] == '\\'):
-        path = path[:-1] # remove last char. from string
+        if (len(path) == 1):
+            return path
+        else:
+            path = path[:-1] # remove last char. from string
         
     return path
 
