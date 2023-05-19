@@ -5,6 +5,7 @@ This module contains functionality related to performing file/directory operatio
 writing, renaming, deleting, and moving.
 '''
 
+import re
 import os
 from pathlib import Path
 import shutil
@@ -12,6 +13,7 @@ import inspect
 import csv
 import json
 import subprocess
+from typing import Literal, List
 
 from com.nwrobel import mypycommons
 import com.nwrobel.mypycommons.utils
@@ -80,18 +82,20 @@ def joinPaths(path1, path2):
     joined = os.path.join(path1, path2)
     return os.path.abspath(joined)
 
-def getChildPathsRecursive(rootDirPath, pathType='', useWindowsExtendedPaths=False):
+def getChildPathsRecursive(rootDir: str, pathType: Literal['file', 'dir'] = None, containsStr: str = None, useWindowsExtendedPaths: bool = False):
     '''
     Gets the child paths of the root filepath, recursively.
 
     @params
-    rootDirPath: the parent directory to search for paths within
-    pathType: (optional) "file" or "dir" to return only files or only directories
-    useWindowsExtendedPaths: (optional) makes all paths returned use the Windows extended path 
-        syntax, to avoid problems with long filepaths 
+    rootDir: the parent directory to search for paths within
+    pathType: "file" or "dir" to return only files or only directories
+    containsStr: returns path if the child path contains the given string (will only consider the
+        partial path, relative to root, for matching)
+    useWindowsExtendedPaths: makes all paths returned use the Windows extended path syntax, to avoid
+       problems with long filepaths 
     '''
-    pathObj = Path(rootDirPath)
-    childrenObjs = pathObj.glob('**/*')
+    pathRootObj = Path(rootDir)
+    childrenObjs = [pathObj for pathObj in pathRootObj.glob('**/*')]
     
     fileObjs = [childObj for childObj in childrenObjs if _isFile(childObj)]
     dirObjs = [childObj for childObj in childrenObjs if _isDir(childObj)]
@@ -103,14 +107,27 @@ def getChildPathsRecursive(rootDirPath, pathType='', useWindowsExtendedPaths=Fal
         filePaths = [str(fileObj) for fileObj in fileObjs]
         dirPaths = [str(dirObj) for dirObj in dirObjs]
 
-    if (pathType == 'file'):
-        return filePaths
+    allPaths = (filePaths + dirPaths)
 
-    elif (pathType == 'dir'):
-        return dirPaths
-    
+    filePaths.sort()
+    dirPaths.sort()
+    allPaths.sort()
+
+    if (containsStr):
+        if (pathType == 'file'):
+            return _filterChildPaths(rootDir, filePaths, containsStr)
+        elif (pathType == 'dir'):
+            return _filterChildPaths(rootDir, dirPaths, containsStr)
+        else:
+            return _filterChildPaths(rootDir, allPaths, containsStr)
     else:
-        return (dirPaths + filePaths)
+        if (pathType == 'file'):
+            return filePaths
+        elif (pathType == 'dir'):
+            return dirPaths
+        else:
+            return allPaths
+
 
 def getFilesByExtension(rootDirPath, fileExt, useWindowsExtendedPaths=False):
     '''
@@ -265,6 +282,12 @@ def getFileBaseName(filepath):
     '''
     filePathObject = Path(filepath)
     return filePathObject.stem
+
+def getPartialPath(rootDir: str, path: str) -> str:
+    ''' 
+    Gets the partial path of the given absolute path, relative to the root (starting point)
+    ''' 
+    return os.path.relpath(path, rootDir)
 
 def applyPermissionToPath(path, owner, group, mask, recursive=False):
     '''
@@ -513,3 +536,25 @@ def _filterCSVLinesForIterator(inFileIterator):
         if (not _CSVLineIsComment(line) and not _CSVLineIsEmpty(line)):
             yield line
 
+def _filterChildPaths(rootDir: str, childPaths: List[str], containsStr: str):
+    ''' 
+    Returns the list of paths that contain the given string. The partial path (relative to root
+    dir) is checked for a match, not the whole path.
+    ''' 
+    #regexStringFmt = re.compile(regexStr)
+
+    partialPaths = []
+    for path in childPaths:
+        partialPaths.append(getPartialPath(rootDir, path))
+
+    matchingPartialPaths = []
+    for path in partialPaths:
+        if (containsStr in path):
+            matchingPartialPaths.append(path)
+
+    matchingPaths = []
+    for partialPath in matchingPartialPaths:
+        fullPath = joinPaths(rootDir, partialPath)
+        matchingPaths.append(fullPath)
+
+    return matchingPaths

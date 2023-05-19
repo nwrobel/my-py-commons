@@ -94,6 +94,34 @@ class File_ModuleTest(unittest.TestCase):
 
         self.assertEqual(parentPath, 'C:\\local\\data\\new')
 
+    def test_getChildPathsRecursive(self):
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory)
+        self.assertEqual(len(result), 13)
+        
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, pathType='file')
+        self.assertEqual(len(result), 11)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, pathType='dir')
+        self.assertEqual(len(result), 2)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, containsStr='txt')
+        self.assertEqual(len(result), 6)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, containsStr='test')
+        self.assertEqual(len(result), 8)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, containsStr='bar')
+        self.assertEqual(len(result), 2)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, pathType='dir', containsStr='bar')
+        self.assertEqual(len(result), 1)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, containsStr='foo')
+        self.assertEqual(len(result), 6)
+
+        result = mypycommons.file.getChildPathsRecursive(rootDir=self.testDirectory, pathType='file', containsStr='test')
+        self.assertEqual(len(result), 8)
+
     def test_writeJsonFile(self):
         '''
         '''

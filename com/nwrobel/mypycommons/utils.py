@@ -1,6 +1,7 @@
 '''
 This module contains functionality for things that fall under no simple category: general 'utils'.
 '''
+
 from typing import List
 
 def stringStartsWith(inputString, startsWith):
