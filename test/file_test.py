@@ -134,5 +134,13 @@ class File_ModuleTest(unittest.TestCase):
         actualJsonFileData = mypycommons.file.readJsonFile(testOutputPath)
         self.assertEqual(testContents, actualJsonFileData)
 
+    def test_clearFileContents(self):
+        mypycommons.file.clearFileContents(self.testFilePath)
+
+        data = mypycommons.file.readFile(self.testFilePath)
+        self.assertTrue(mypycommons.file.pathExists(self.testFilePath))
+
+        self.assertFalse(data)
+
 if __name__ == '__main__':
     unittest.main()

@@ -319,13 +319,12 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
 
 def clearFileContents(filepath):
     '''
-    Removes all the data from the target file by deleting the file and re-creating it as an empty
+    Removes all the data from the target file by re-creating it as an empty
     file with 0 bytes of data.
 
     @params
     filepath: (str) the path of the file to clear
     '''
-    deletePath(filepath)
     open(filepath, 'wb').close()
 
 def writeToFile(filepath, content, append=False):
