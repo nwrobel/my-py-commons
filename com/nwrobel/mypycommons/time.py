@@ -126,7 +126,7 @@ def getCurrentFormattedTime():
     Timestamps in this format are not meant to be used for precise calculations. Instead, use the
     original epoch timestamp values, which may include fractional/decimal seconds. 
     '''
-    return formatTimestampForDisplay(getCurrentTimestamp())
+    return formatDatetimeForDisplay(datetime.datetime.now())
 
 def getCurrentTimestampForFilename():
     '''
