@@ -4,7 +4,8 @@ mlu.common.time
 Module containing "common" functionality related to time and timestamp logic.
 '''
 
-import datetime
+from datetime import datetime, timedelta
+from pytimeparse.timeparse import timeparse
 
 def isValidTimestamp(timestamp):
     '''
@@ -19,9 +20,9 @@ def isValidTimestamp(timestamp):
     if (not isinstance(timestamp, int)) and (not isinstance(timestamp, float)):
         return False
 
-    lowerThresholdDatetime = datetime.datetime(year=1900, month=1, day=1)
-    upperThresholdDatetime = datetime.datetime.now()
-    testValueDatetime = datetime.datetime.fromtimestamp(timestamp)
+    lowerThresholdDatetime = datetime(year=1900, month=1, day=1)
+    upperThresholdDatetime = datetime.now()
+    testValueDatetime = datetime.fromtimestamp(timestamp)
 
     isValid = (lowerThresholdDatetime <= testValueDatetime <= upperThresholdDatetime)
     return isValid
@@ -30,9 +31,9 @@ def convertDateTimeToTimestamp(dateTime: datetime) -> float:
     '''
     Converts a datetime object into an epoch timestamp (float)
     '''
-    return datetime.datetime.timestamp(dateTime)
+    return datetime.timestamp(dateTime)
 
-def formatDatetimeForDisplay(datetime: datetime.datetime) -> str:
+def formatDatetimeForDisplay(datetime: datetime) -> str:
     ''' 
     Converts a datetime object into a human-readable string.
     Format is: YYYY-MM-DD HH-MM-SS (ex: "2012-01-27 02:29:33")
@@ -47,8 +48,15 @@ def getDateTimeFromFormattedTime(formattedTime: str) -> datetime:
     @params
     formattedTime: (str) the pretty formatted time string to convert
     '''
-    dateTime = datetime.datetime.strptime(formattedTime, "%Y-%m-%d %H:%M:%S")
+    dateTime = datetime.strptime(formattedTime, "%Y-%m-%d %H:%M:%S")
     return dateTime
+
+def getTimedeltaFromFormattedDuration(formattedTime: str) -> timedelta:
+    '''
+    Given a duration formatted like "0:03:01" create a timedelta object
+    '''
+    seconds = timeparse(formattedTime)
+    return timedelta(seconds=seconds)
 
 def applyDeltaYearsToTimestamp(startTimestamp, years):
     '''
@@ -60,9 +68,9 @@ def applyDeltaYearsToTimestamp(startTimestamp, years):
     startTimestamp: (int or float) the starting epoch timestamp
     years: (int) number of years time to add
     '''
-    startDt = datetime.datetime.fromtimestamp(startTimestamp)
+    startDt = datetime.fromtimestamp(startTimestamp)
     newDt = startDt + datetime.timedelta(years=years)
-    newTimestamp = datetime.datetime.timestamp(newDt)
+    newTimestamp = datetime.timestamp(newDt)
 
     return newTimestamp
 
@@ -76,9 +84,9 @@ def applyDeltaSecondsToTimestamp(startTimestamp, seconds):
     startTimestamp: (int or float) the starting epoch timestamp
     seconds: (int) number of seconds time to add
     '''
-    startDt = datetime.datetime.fromtimestamp(startTimestamp)
+    startDt = datetime.fromtimestamp(startTimestamp)
     newDt = startDt + datetime.timedelta(seconds=seconds)
-    newTimestamp = datetime.datetime.timestamp(newDt)
+    newTimestamp = datetime.timestamp(newDt)
 
     return newTimestamp
 
@@ -91,7 +99,7 @@ def convertDurationToTimestamp(seconds):
     seconds: (int) number of seconds of duration to convert
     '''
     secondsDt = datetime.timedelta(seconds=seconds)
-    secondsTimestamp = datetime.datetime.timestamp(secondsDt)
+    secondsTimestamp = datetime.timestamp(secondsDt)
     return secondsTimestamp
 
 
@@ -99,7 +107,7 @@ def getCurrentYear():
     '''
     Returns the 4 digit integer value of the current calendar year.
     '''
-    currentYear = (datetime.datetime.now()).year  
+    currentYear = (datetime.now()).year  
     return int(currentYear) 
 
 
@@ -107,8 +115,8 @@ def getCurrentTimestamp():
     '''
     Returns the current time as an epoch timestamp.
     '''
-    dt = datetime.datetime.now()
-    return datetime.datetime.timestamp(dt)
+    dt = datetime.now()
+    return datetime.timestamp(dt)
 
 def getCurrentFormattedTime():
     '''
@@ -126,7 +134,7 @@ def getCurrentFormattedTime():
     Timestamps in this format are not meant to be used for precise calculations. Instead, use the
     original epoch timestamp values, which may include fractional/decimal seconds. 
     '''
-    return formatDatetimeForDisplay(datetime.datetime.now())
+    return formatDatetimeForDisplay(datetime.now())
 
 def getCurrentTimestampForFilename():
     '''
