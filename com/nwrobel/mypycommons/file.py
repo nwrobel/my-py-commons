@@ -301,6 +301,9 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     mask: the octal mask to apply to the path
     recursive: if true, sets the permissions to a directory recursively
 
+    @returns
+    tuple of the stdout of the commands run: (chownResultTxt, chmodResultTxt)
+
     @notes
     This only works on Linux machines. 
     This requires root (sudo) permissions to work - the python script using this function must
@@ -309,13 +312,20 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     # Set ownership and permissions using by calling the linux chown and chmod commands
     ownerGroup = "{}:{}".format(owner, group)
 
-    if (recursive):    
-        subprocess.call(['sudo', 'chown', ownerGroup, '-R', path])
-        subprocess.call(['sudo', 'chmod', mask, '-R', path])
+    chownResult = ''
+    chmodResult = ''
 
+    if (recursive):    
+        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, '-R', path], stdout=subprocess.PIPE)
+        chmodResult = subprocess.run(['sudo', 'chmod', mask, '-R', path], stdout=subprocess.PIPE)
     else:
-        subprocess.call(['sudo', 'chown', ownerGroup, path])
-        subprocess.call(['sudo', 'chmod', mask, path])
+        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, path], stdout=subprocess.PIPE)
+        chmodResult = subprocess.run(['sudo', 'chmod', mask, path], stdout=subprocess.PIPE)
+
+    chownResultTxt = chownResult.stdout.decode('utf8')
+    chmodResultTxt = chmodResult.stdout.decode('utf8')
+
+    return (chownResultTxt, chmodResultTxt)
 
 def clearFileContents(filepath):
     '''
