@@ -302,7 +302,7 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     recursive: if true, sets the permissions to a directory recursively
 
     @returns
-    tuple of the stdout of the commands run: (chownResultTxt, chmodResultTxt)
+    tuple of the std error stream of the commands run: (chownResultTxt, chmodResultTxt)
 
     @notes
     This only works on Linux machines. 
@@ -316,14 +316,14 @@ def applyPermissionToPath(path, owner, group, mask, recursive=False):
     chmodResult = ''
 
     if (recursive):    
-        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, '-R', path], stdout=subprocess.PIPE)
-        chmodResult = subprocess.run(['sudo', 'chmod', mask, '-R', path], stdout=subprocess.PIPE)
+        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, '-R', path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        chmodResult = subprocess.run(['sudo', 'chmod', mask, '-R', path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
-        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, path], stdout=subprocess.PIPE)
-        chmodResult = subprocess.run(['sudo', 'chmod', mask, path], stdout=subprocess.PIPE)
+        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        chmodResult = subprocess.run(['sudo', 'chmod', mask, path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    chownResultTxt = chownResult.stdout.decode('utf8')
-    chmodResultTxt = chmodResult.stdout.decode('utf8')
+    chownResultTxt = chownResult.stderr.decode('utf8')
+    chmodResultTxt = chmodResult.stderr.decode('utf8')
 
     return (chownResultTxt, chmodResultTxt)
 
