@@ -82,6 +82,20 @@ def joinPaths(path1, path2):
     joined = os.path.join(path1, path2)
     return os.path.abspath(joined)
 
+def getPathParts(path):
+    '''
+    Returns a list of items, each one a piece of the split path
+    '''
+    path = os.path.normpath(path)
+    pathp = path.split(os.sep)
+    return pathp
+
+def getChildPathsDepth1(rootDir):
+    '''
+    Returns list of child item paths (files and dirs), depth 1 only.
+    '''
+    return glob("{}/*".format(path), recursive=False)
+
 def getChildPathsRecursive(rootDir: str, pathType: Literal['file', 'dir'] = None, containsStr: str = None, useWindowsExtendedPaths: bool = False):
     '''
     Gets the child paths of the root filepath, recursively.
@@ -289,43 +303,35 @@ def getPartialPath(rootDir: str, path: str) -> str:
     ''' 
     return os.path.relpath(path, rootDir)
 
-def applyPermissionToPath(path, owner, group, mask, recursive=False):
+def applyPermissionToPathMask(path, mask):
     '''
-    Applies the given Unix file permissions (owner, group, permission mask) to the given path using
-    the chown and chmod commands. 
+    Applies the given Unix file permissions mask to the given path. 
+
+    @params
+    path: the full path to the file or directory
+    mask: the string mask to apply to the path (ex: 755)
+
+    @notes
+    This only works on Linux machines. 
+    This may require root (sudo) permissions to work
+    '''
+    maskOctal = int(mask, 8)
+    os.chmod(path, maskOctal)
+
+def applyPermissionToPathOwnerGroup(path, owner, group):
+    '''
+    Applies the given Unix file permissions (owner, group) to the given path. 
 
     @params
     path: the full path to the file or directory
     owner: the system username to apply as the owner
     group: the system groupname to apply as the group
-    mask: the octal mask to apply to the path
-    recursive: if true, sets the permissions to a directory recursively
-
-    @returns
-    tuple of the std error stream of the commands run: (chownResultTxt, chmodResultTxt)
 
     @notes
     This only works on Linux machines. 
-    This requires root (sudo) permissions to work - the python script using this function must
-    be run like "sudo python3 script.py".
+    This may require root (sudo) permissions to work
     '''
-    # Set ownership and permissions using by calling the linux chown and chmod commands
-    ownerGroup = "{}:{}".format(owner, group)
-
-    chownResult = ''
-    chmodResult = ''
-
-    if (recursive):    
-        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, '-R', path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        chmodResult = subprocess.run(['sudo', 'chmod', mask, '-R', path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    else:
-        chownResult = subprocess.run(['sudo', 'chown', ownerGroup, path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        chmodResult = subprocess.run(['sudo', 'chmod', mask, path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    chownResultTxt = chownResult.stderr.decode('utf8')
-    chmodResultTxt = chmodResult.stderr.decode('utf8')
-
-    return (chownResultTxt, chmodResultTxt)
+    shutil.chown(path, user=owner, group=group)
 
 def clearFileContents(filepath):
     '''

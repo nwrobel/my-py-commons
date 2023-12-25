@@ -43,3 +43,9 @@ def convertBitsToKilobits(bits):
     kilobits = round(bits / 1000)
     return kilobits
 
+def getListDupes(inputList):
+    '''
+    Returns a set of the items in the list that are duplicates
+    '''
+    return set([x for x in inputList if inputList.count(x) > 1])
+
