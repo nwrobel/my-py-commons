@@ -53,6 +53,9 @@ def pathExists(path):
     @params
     path: (str) the path to check
     '''
+    if (not path):
+        return False
+        
     pathObj = Path(path)
     return (_isFile(pathObj) or _isDir(pathObj))
 
