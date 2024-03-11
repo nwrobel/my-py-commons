@@ -55,7 +55,7 @@ def pathExists(path):
     '''
     if (not path):
         return False
-        
+
     pathObj = Path(path)
     return (_isFile(pathObj) or _isDir(pathObj))
 
@@ -370,8 +370,8 @@ def writeToFile(filepath, content, append=False):
 
 def readFile(filepath, encoding='utf-8'):
     '''
-    Reads the data line by line from the given file and returns a list of strings representing each
-    line of the file. Newlines in the file will show up as newline characters in each string in the list.
+    Reads the data from the given file and returns a list of strings representing each
+    line of the file. Newline characters are removed from result strings.
 
     @params:
     filepath: path to the file  
@@ -379,7 +379,8 @@ def readFile(filepath, encoding='utf-8'):
     '''
     with open(filepath, 'r', encoding=encoding) as infile:
         fileLines = infile.readlines()
-        
+    
+    fileLines = [x.replace('\n', '') for x in fileLines]
     return fileLines
 
 def readJsonFile(filepath):
